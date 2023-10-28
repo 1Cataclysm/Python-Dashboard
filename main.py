@@ -1,146 +1,169 @@
 import dash
 from dash import dcc, html
-import folium
+import folium, branca
 import caracteristique
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 from folium import IFrame
 
 coord_dict = {
     "01": (46.099, 5.349, "Ain"),
-    "02": (49.559, 3.558, "Aisne"),
+    "02": (49.559, 3.333, "Aisne"),
     "03": (46.394, 3.188, "Allier"),
     "04": (44.106, 6.244, "Alpes-de-Haute-Provence"),
-    "05": (44.664, 6.263, "Hautes-Alpes"),
-    "06": (43.937, 7.116, "Alpes-Maritimes"),
-    "07": (44.751, 4.425, "Ardèche"),
-    "08": (49.615, 4.641, "Ardennes"),
+    "05": (44.664, 6.262, "Hautes-Alpes"),
+    "06": (43.938, 7.116, "Alpes-Maritimes"),
+    "07": (44.539, 4.383, "Ardèche"),
+    "08": (49.616, 4.712, "Ardennes"),
     "09": (42.920, 1.504, "Ariège"),
-    "10": (48.304, 4.161, "Aube"),
-    "11": (43.103, 2.415, "Aude"),
-    "12": (44.281, 2.680, "Aveyron"),
-    "13": (43.543, 5.086, "Bouches-du-Rhône"),
-    "14": (49.099, 0.364, "Calvados"),
-    "15": (45.051, 2.669, "Cantal"),
-    "16": (45.718, 0.202, "Charente"),
-    "17": (45.781, 0.674, "Charente-Maritime"),
-    "18": (47.065, 2.488, "Cher"),
-    "19": (45.354, 1.877, "Corrèze"),
-    "2A": (41.865, 8.988, "Corse-du-Sud"),
-    "2B": (42.394, 9.206, "Haute-Corse"),
-    "21": (47.425, 4.772, "Côte-d'Or"),
-    "22": (48.441, 2.865, "Côtes-d'Armor"),
-    "23": (46.057, 2.019, "Creuse"),
-    "24": (45.104, 0.741, "Dordogne"),
-    "25": (47.166, 6.361, "Doubs"),
-    "26": (44.685, 5.168, "Drôme"),
-    "27": (49.115, 0.996, "Eure"),
-    "28": (48.387, 1.370, "Eure-et-Loir"),
-    "29": (48.261, 4.058, "Finistère"),
-    "30": (43.993, 4.180, "Gard"),
-    "31": (43.358, 1.173, "Haute-Garonne"),
-    "32": (43.692, 0.453, "Gers"),
-    "33": (44.826, 0.575, "Gironde"),
-    "34": (43.579, 3.367, "Hérault"),
-    "35": (48.154, 1.638, "Ille-et-Vilaine"),
-    "36": (46.777, 1.576, "Indre"),
-    "37": (47.258, 0.691, "Indre-et-Loire"),
-    "38": (45.264, 5.576, "Isère"),
-    "39": (46.729, 5.698, "Jura"),
-    "40": (43.965, 0.784, "Landes"),
-    "41": (47.617, 1.429, "Loir-et-Cher"),
-    "42": (45.727, 4.166, "Loire"),
-    "43": (45.128, 3.806, "Haute-Loire"),
-    "44": (47.361, 1.682, "Loire-Atlantique"),
-    "45": (47.912, 2.344, "Loiret"),
-    "46": (44.371, 1.271, "Lot"),
-    "47": (44.367, 0.460, "Lot-et-Garonne"),
-    "48": (44.517, 3.500, "Lozère"),
-    "49": (47.391, 0.564, "Maine-et-Loire"),
-    "50": (49.079, 1.327, "Manche"),
-    "51": (48.949, 4.236, "Marne"),
-    "52": (45.157, 6.256, "Haute-Marne"),
-    "53": (48.147, 0.658, "Mayenne"),
-    "54": (48.787, 6.165, "Meurthe-et-Moselle"),
-    "55": (48.989, 5.382, "Meuse"),
-    "56": (47.847, 2.810, "Morbihan"),
-    "57": (49.037, 6.663, "Moselle"),
-    "58": (47.115, 3.504, "Nièvre"),
-    "59": (50.448, 3.220, "Nord"),
-    "60": (49.410, 2.425, "Oise"),
-    "61": (48.623, 0.129, "Orne"),
-    "62": (50.494, 2.288, "Pas-de-Calais"),
-    "63": (45.726, 3.141, "Puy-de-Dôme"),
-    "64": (43.221, 0.762, "Pyrénées-Atlantiques"),
-    "65": (43.127, 0.174, "Hautes-Pyrénées"),
-    "66": (42.689, 2.832, "Pyrénées-Orientales"),
-    "67": (48.383, 7.617, "Bas-Rhin"),
-    "68": (47.918, 7.384, "Haut-Rhin"),
-    "69": (45.754, 4.885, "Rhône"),
-    "70": (47.688, 6.120, "Haute-Saône"),
-    "71": (46.667, 4.450, "Saône-et-Loire"),
-    "72": (47.898, 0.220, "Sarthe"),
-    "73": (45.600, 6.401, "Savoie"),
-    "74": (46.045, 6.335, "Haute-Savoie"),
-    "75": (48.856, 2.352, "Paris"),
-    "76": (49.494, 0.107, "Seine-Maritime"),
-    "77": (48.646, 2.712, "Seine-et-Marne"),
-    "78": (48.812, 2.097, "Yvelines"),
-    "79": (46.617, 0.149, "Deux-Sèvres"),
-    "80": (49.892, 2.302, "Somme"),
-    "81": (43.939, 1.849, "Tarn"),
-    "82": (44.077, 1.248, "Tarn-et-Garonne"),
-    "83": (43.373, 6.616, "Var"),
-    "84": (44.068, 5.103, "Vaucluse"),
-    "85": (46.669, 1.427, "Vendée"),
-    "86": (46.581, 0.336, "Vienne"),
-    "87": (45.889, 1.062, "Haute-Vienne"),
-    "88": (48.235, 6.077, "Vosges"),
-    "89": (47.799, 3.566, "Yonne"),
-    "90": (47.639, 6.877, "Territoire de Belfort"),
-    "91": (48.520, 2.243, "Essonne"),
-    "92": (48.847, 2.245, "Hauts-de-Seine"),
-    "93": (48.917, 2.478, "Seine-Saint-Denis"),
-    "94": (48.777, 2.468, "Val-de-Marne"),
-    "95": (49.082, 2.131, "Val-d'Oise")
+    "10": (48.304, 4.155, "Aube"),
+    "11": (43.194, 2.922, "Aude"),
+    "12": (44.259, 2.544, "Aveyron"),
+    "13": (43.474, 5.390, "Bouches-du-Rhône"),
+    "14": (49.104, -0.289, "Calvados"),
+    "15": (45.085, 2.765, "Cantal"),
+    "16": (45.849, 0.675, "Charente"),
+    "17": (45.833, -0.674, "Charente-Maritime"),
+    "18": (47.147, 2.215, "Cher"),
+    "19": (45.409, 1.439, "Corrèze"),
+    "2A": (41.927, 8.738, "Corse-du-Sud"),
+    "2B": (42.296, 9.164, "Haute-Corse"),
+    "21": (47.321, 4.866, "Côte-d'Or"),
+    "22": (48.415, -2.840, "Côtes-d'Armor"),
+    "23": (45.954, 2.160, "Creuse"),
+    "24": (45.144, 0.761, "Dordogne"),
+    "25": (47.245, 6.024, "Doubs"),
+    "26": (44.722, 4.556, "Drôme"),
+    "27": (49.030, 1.156, "Eure"),
+    "28": (48.447, 1.507, "Eure-et-Loir"),
+    "29": (48.049, -4.095, "Finistère"),
+    "30": (43.908, 4.282, "Gard"),
+    "31": (43.605, 1.443, "Haute-Garonne"),
+    "32": (43.796, 0.622, "Gers"),
+    "33": (44.983, -0.511, "Gironde"),
+    "34": (43.581, 3.674, "Hérault"),
+    "35": (48.113, -1.685, "Ille-et-Vilaine"),
+    "36": (46.819, 1.675, "Indre"),
+    "37": (47.253, 0.720, "Indre-et-Loire"),
+    "38": (45.171, 5.742, "Isère"),
+    "39": (46.673, 5.590, "Jura"),
+    "40": (43.883, -0.751, "Landes"),
+    "41": (47.671, 1.389, "Loir-et-Cher"),
+    "42": (45.433, 4.395, "Loire"),
+    "43": (45.139, 3.833, "Haute-Loire"),
+    "44": (47.326, -1.642, "Loire-Atlantique"),
+    "45": (47.977, 2.743, "Loiret"),
+    "46": (44.603, 1.580, "Lot"),
+    "47": (44.367, 0.757, "Lot-et-Garonne"),
+    "48": (44.523, 3.501, "Lozère"),
+    "49": (47.500, -0.750, "Maine-et-Loire"),
+    "50": (49.144, -1.255, "Manche"),
+    "51": (48.938, 4.219, "Marne"),
+    "52": (48.023, 4.958, "Haute-Marne"),
+    "53": (48.153, -0.620, "Mayenne"),
+    "54": (48.692, 6.184, "Meurthe-et-Moselle"),
+    "55": (49.141, 5.405, "Meuse"),
+    "56": (47.735, -2.860, "Morbihan"),
+    "57": (49.041, 6.227, "Moselle"),
+    "58": (47.283, 3.751, "Nièvre"),
+    "59": (50.628, 3.057, "Nord"),
+    "60": (49.650, 2.278, "Oise"),
+    "61": (48.549, 0.402, "Orne"),
+    "62": (50.541, 2.285, "Pas-de-Calais"),
+    "63": (45.771, 3.109, "Puy-de-Dôme"),
+    "64": (43.323, -0.416, "Pyrénées-Atlantiques"),
+    "65": (42.991, 0.128, "Hautes-Pyrénées"),
+    "66": (42.610, 2.833, "Pyrénées-Orientales"),
+    "67": (48.288, 7.409, "Bas-Rhin"),
+    "68": (47.875, 7.267, "Haut-Rhin"),
+    "69": (45.758, 4.841, "Rhône"),
+    "70": (47.641, 6.187, "Haute-Saône"),
+    "71": (46.655, 4.350, "Saône-et-Loire"),
+    "72": (48.006, 0.199, "Sarthe"),
+    "73": (45.555, 6.393, "Savoie"),
+    "74": (45.977, 6.113, "Haute-Savoie"),
+    "75": (48.859, 2.351, "Paris"),
+    "76": (49.443, 0.105, "Seine-Maritime"),
+    "77": (48.628, 2.990, "Seine-et-Marne"),
+    "78": (48.818, 2.135, "Yvelines"),
+    "79": (46.617, -0.169, "Deux-Sèvres"),
+    "80": (49.895, 2.302, "Somme"),
+    "81": (43.731, 1.378, "Tarn"),
+    "82": (44.044, 1.356, "Tarn-et-Garonne"),
+    "83": (43.471, 6.641, "Var"),
+    "84": (44.054, 5.050, "Vaucluse"),
+    "85": (46.648, -1.418, "Vendée"),
+    "86": (46.577, 0.609, "Vienne"),
+    "87": (45.833, 1.261, "Haute-Vienne"),
+    "88": (48.170, 6.446, "Vosges"),
+    "89": (47.800, 3.574, "Yonne"),
+    "90": (47.632, 6.856, "Territoire de Belfort"),
+    "91": (48.522, 2.341, "Essonne"),
+    "92": (48.900, 2.259, "Hauts-de-Seine"),
+    "93": (48.917, 2.333, "Seine-Saint-Denis"),
+    "94": (48.791, 2.393, "Val-de-Marne"),
+    "95": (49.046, 2.167, "Val-d'Oise"),
+    "971": (16.230, -61.504, "Guadeloupe"),
+    "972": (14.641, -61.024, "Martinique"),
+    "973": (4.069, -52.339, "Guyane"),
+    "974": (-21.130, 55.526, "La Réunion"),
 }
 
 # Obtenir les données pour la carte
-nb_accidents_par_departement = caracteristique.get_data(1)
+nb_accidents_par_departement = caracteristique.get_data(1)  # Remplacez ceci par vos données
 
 # Créer une application Dash
 app = dash.Dash(__name__)
 
-# Créer la carte Folium
+# Créer la carte Folium initiale
 m = folium.Map(location=[46.603354, 1.888334], zoom_start=6)
 
 # Définir un rayon fixe pour tous les cercles (par exemple, 5000)
-fixed_radius = 5
-total = 0
-# Parcourir les départements et ajouter des cercles colorés
-for departement, nb_accidents in nb_accidents_par_departement.items():
-    if departement in coord_dict:
-        total += 1
-        lat, lon, name = coord_dict[departement]
-        popup_html = f'<h5>{name}</h5><p>{nb_accidents} accidents</p>'
-        iframe = IFrame(html=popup_html, width=100, height=100)
-        popup = folium.Popup(iframe, max_width=200)
-        folium.CircleMarker(
-            location=[lat, lon],
-            radius=fixed_radius,  # Utilisation du rayon fixe pour tous les cercles
-            fill=True,
-            color='red',
-            fill_opacity=0.6,
-            popup=popup
-        ).add_to(m)
+fixed_radius = 15
 
-# Sauvegarder la carte en tant que fichier HTML temporaire
-m.save('temp_map.html')
-print(total)
-# Mise en page de l'application
+# Créer un colormap en fonction de vos données avec une palette de couleurs personnalisée
+min_accidents = min(nb_accidents_par_departement.values())
+max_accidents = max(nb_accidents_par_departement.values())
+
+color_map = branca.colormap.LinearColormap(['green', 'gold', 'orange', 'red'], vmin=min_accidents, vmax=max_accidents)
+
+# Fonction pour mettre à jour la carte en fonction de la valeur de filtre
+def update_map(filter_value):
+    # Effacez d'abord la carte actuelle
+    m = folium.Map(location=[46.603354, 1.888334], zoom_start=6)
+    for departement, nb_accidents in nb_accidents_par_departement.items():
+        if departement in coord_dict and nb_accidents > filter_value:
+            lat, lon, name = coord_dict[departement]
+            popup_html = f'<h8>{name} {departement}</h8><p>{nb_accidents} accidents</p>'
+            iframe = IFrame(html=popup_html, width=100, height=100)
+            popup = folium.Popup(iframe, max_width=200)
+            color = color_map(nb_accidents)  # Assigner une couleur en fonction du nombre d'accidents
+            folium.CircleMarker(
+                location=[lat, lon],
+                radius=fixed_radius,
+                fill=True,
+                color=color,
+                fill_color=color,
+                fill_opacity=0.6,
+                popup=popup
+            ).add_to(m)
+    color_map.add_to(m)
+    return m
+
+# Définir la mise en page de l'application
 app.layout = html.Div([
-    html.H1("Ma page"),  # Titre de la page
-    html.Iframe(srcDoc=open('temp_map.html', 'r').read(), width='100%', height='600')
+    html.H1("MAP | Nombre d'accidents par départements en France"),  # Titre de la page
+    dcc.Input(id='filter-input', type='number', value=0, debounce=True),
+    html.Div(id='map-container')
 ])
+
+# Mettre en place le rappel pour mettre à jour la carte
+@app.callback(
+    Output('map-container', 'children'),
+    Input('filter-input', 'value')
+)
+def update_map_output(filter_value):
+    updated_map = update_map(filter_value)
+    return html.Iframe(srcDoc=updated_map.get_root().render(), width='700px', height='600px')
 
 # Exécuter l'application
 if __name__ == '__main__':
