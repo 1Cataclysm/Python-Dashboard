@@ -10,7 +10,7 @@ import caracteristique
 import vehicule
 
 
-dict_obs = vehicule.get_data()
+dict_obs = vehicule.get_data_vehicule()
 coord_dict = get_data.get_dep()
 
 # Obtenir les données pour la carte

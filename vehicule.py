@@ -4,7 +4,7 @@ import get_data
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
-def get_data():
+def get_data_vehicule():
 
     dic_obs=get_data.get_OBS()
     # Lien vers l'API
