@@ -1,10 +1,3 @@
-import dash
-from dash import dcc, html
-import folium, branca
-import caracteristique
-from dash.dependencies import Input, Output, State
-from folium import IFrame
-
 coord_dict = {
     "01": (46.099, 5.349, "Ain"),
     "02": (49.559, 3.333, "Aisne"),
@@ -107,64 +100,3 @@ coord_dict = {
     "973": (4.069, -52.339, "Guyane"),
     "974": (-21.130, 55.526, "La Réunion"),
 }
-
-# Obtenir les données pour la carte
-nb_accidents_par_departement = caracteristique.get_data(1)  # Remplacez ceci par vos données
-
-# Créer une application Dash
-app = dash.Dash(__name__)
-
-# Créer la carte Folium initiale
-m = folium.Map(location=[46.603354, 1.888334], zoom_start=6)
-
-# Définir un rayon fixe pour tous les cercles (par exemple, 5000)
-fixed_radius = 15
-
-# Créer un colormap en fonction de vos données avec une palette de couleurs personnalisée
-min_accidents = min(nb_accidents_par_departement.values())
-max_accidents = max(nb_accidents_par_departement.values())
-
-color_map = branca.colormap.LinearColormap(['green', 'gold', 'orange', 'red'], vmin=min_accidents, vmax=max_accidents)
-
-# Fonction pour mettre à jour la carte en fonction de la valeur de filtre
-def update_map(filter_value):
-    # Effacez d'abord la carte actuelle
-    m = folium.Map(location=[46.603354, 1.888334], zoom_start=6)
-    for departement, nb_accidents in nb_accidents_par_departement.items():
-        if departement in coord_dict and nb_accidents > filter_value:
-            lat, lon, name = coord_dict[departement]
-            popup_html = f'<h8>{name} {departement}</h8><p>{nb_accidents} accidents</p>'
-            iframe = IFrame(html=popup_html, width=100, height=100)
-            popup = folium.Popup(iframe, max_width=200)
-            color = color_map(nb_accidents)  # Assigner une couleur en fonction du nombre d'accidents
-            folium.CircleMarker(
-                location=[lat, lon],
-                radius=fixed_radius,
-                fill=True,
-                color=color,
-                fill_color=color,
-                fill_opacity=0.6,
-                popup=popup
-            ).add_to(m)
-    color_map.add_to(m)
-    return m
-
-# Définir la mise en page de l'application
-app.layout = html.Div([
-    html.H1("MAP | Nombre d'accidents par départements en France"),  # Titre de la page
-    dcc.Input(id='filter-input', type='number', value=0, debounce=True),
-    html.Div(id='map-container')
-])
-
-# Mettre en place le rappel pour mettre à jour la carte
-@app.callback(
-    Output('map-container', 'children'),
-    Input('filter-input', 'value')
-)
-def update_map_output(filter_value):
-    updated_map = update_map(filter_value)
-    return html.Iframe(srcDoc=updated_map.get_root().render(), width='700px', height='600px')
-
-# Exécuter l'application
-if __name__ == '__main__':
-    app.run_server(debug=True)

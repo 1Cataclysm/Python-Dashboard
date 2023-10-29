@@ -1,5 +1,9 @@
 import caracteristique as c
-import vehicule
 
+data = c.get_data(1)
 
-print(vehicule.get_data())
+print(data["22"])
+print(data["96"])
+cles = [cle for cle in data]
+print(cles)
+print(len(cles))
