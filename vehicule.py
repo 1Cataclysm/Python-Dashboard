@@ -24,9 +24,3 @@ def get_data_vehicule():
         else: 
             data_accident[dic_obs[OBS]] = 1
     return data_accident
-
-
-
-
-
-# -------------------------------------------------------------------------------- #

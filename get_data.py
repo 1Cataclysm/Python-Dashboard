@@ -145,14 +145,14 @@ if __name__ == '__main__':
     dep_excel_filename = "departements.csv"
     obs_excel_filename = "obstacles.csv"
 
-    # Écrire les données du dictionnaire "dep" dans le fichier CSV
+    # Écrit les données du dictionnaire "dep" dans le fichier CSV
     with open(dep_excel_filename, 'w', newline='', encoding='utf8') as dep_csvfile:
         dep_csvwriter = csv.writer(dep_csvfile, delimiter=';')
         dep_csvwriter.writerow(["Code", "Latitude", "Longitude", "Nom"])
         for code, data in dep_data.items():
             dep_csvwriter.writerow([code, data[0], data[1], data[2]])
 
-    # Écrire les données du dictionnaire "OBS" dans le fichier CSV
+    # Écrit les données du dictionnaire "OBS" dans le fichier CSV
     with open(obs_excel_filename, 'w', newline='', encoding='utf8') as obs_csvfile:
         obs_csvwriter = csv.writer(obs_csvfile, delimiter=';')
         obs_csvwriter.writerow(["Code", "Description"])

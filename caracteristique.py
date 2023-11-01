@@ -3,6 +3,10 @@ import ssl
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
+# ** 
+# retourne un dictionnaire contenant soit tous les accidents,
+# soit le nombre d'accidents par départements
+# **
 def get_data(flag):
     # Lien vers l'API
     url = "https://static.data.gouv.fr/resources/bases-de-donnees-annuelles-des-accidents-corporels-de-la-circulation-routiere-annees-de-2005-a-2021/20231005-093927/carcteristiques-2022.csv"
@@ -36,6 +40,3 @@ def get_data(flag):
         return data_accident
     elif flag == 1:
         return nb_acc_dp
-
-
-# -------------------------------------------------------------------------------- #
