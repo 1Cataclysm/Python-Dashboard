@@ -57,36 +57,33 @@ def update_map(filter_value):
 # Création du graphique en aire 
 accidents_per_month = caracteristique.get_data(3)
 
-# Transformez ce dictionnaire en DataFrame pour Plotly
+# Transforme le dictionnaire en DataFrame pour Plotly
 df_area_chart = pd.DataFrame(list(accidents_per_month.items()), columns=['Mois', 'Nombre d\'accidents'])
 
-# Trier le DataFrame par mois si nécessaire (assurez-vous que les mois sont dans le bon ordre)
+# Trie le dataframe par mois
 df_area_chart['Mois'] = pd.Categorical(df_area_chart['Mois'], 
                                         categories=['janvier', 'fevrier', 'mars', 'avril', 'mai', 'juin', 
                                                     'juillet', 'aout', 'septembre', 'octobre', 'novembre', 'decembre'],
                                         ordered=True)
 df_area_chart.sort_values('Mois', inplace=True)
 
-# Créer le graphique en aire avec Plotly Express
+# Créer le graphique en aire
 fig_area = px.area(df_area_chart, x='Mois', y='Nombre d\'accidents', title='Nombre d\'accidents par mois')
 
 
 # Mise en page de l'app
 app.layout = html.Div([
     html.H1("Nombre d'accidents par départements en France"),
-    dcc.Input(id='filter-input', type='number', value=0, debounce=True, placeholder='Filtrer par le nombre d\'accidents ici..'),
+    dcc.Input(id='filter-input', type='number', debounce=True, placeholder='Filtrer par le nombre d\'accidents ici..'),
     html.Div(id='map-container'),
-    dcc.Graph(id='map-histogram'),  # L'histogramme déjà présent
-    dcc.Dropdown(  # Choix du mois pour le graphique en aire
-        id='month-dropdown',
-        options=[{'label': month, 'value': month} for month in accidents_per_month.keys()],
-        value='janvier',  # Mois par défaut
-        clearable=False
-    ),
-    dcc.Graph(id='accidents-area-chart')  # Nouveau composant pour le graphique en aire
+    html.H1("Histogramme représentant le nombre d'accidents selon le type d'accident"),
+    dcc.Graph(id='map-histogram'),
+    html.H1("Graphique en Aire représentant le nombre d'accidents par jour pour chaque mois"),
+    dcc.Dropdown(id='month-dropdown', options=[{'label': month, 'value': month} for month in accidents_per_month.keys()], value='janvier', clearable=False),
+    dcc.Graph(id='accidents-aire-graph')
 ])
 
-# Update map and histogram based on filter input
+# Update map selon la valeur du filtre
 @app.callback(
     [Output('map-container', 'children'), Output('map-histogram', 'figure')],
     [Input('filter-input', 'value')]
@@ -101,9 +98,9 @@ def update_map_output(filter_value):
     
     return html.Iframe(srcDoc=updated_map.get_root().render(), width='100%', height='600px'), fig
 
-# Update area chart based on selected month
+# Update le graphique aire selon le mois
 @app.callback(
-    Output('accidents-area-chart', 'figure'),
+    Output('accidents-aire-graph', 'figure'),
     [Input('month-dropdown', 'value')]
 )
 def update_area_chart(month):

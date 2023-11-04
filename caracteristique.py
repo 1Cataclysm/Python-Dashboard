@@ -50,8 +50,10 @@ def get_data(flag):
             details_acc_mois[mois][jour] += 1
 
     if flag == 0:
+        # retourne tous les accidents
         return data_accident
     elif flag == 1:
+        # retourne le nombre d'accidents par département
         return nb_acc_dp
     elif flag == 3:
         sorted_details_acc_mois = {}
