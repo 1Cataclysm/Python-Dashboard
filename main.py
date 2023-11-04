@@ -53,30 +53,70 @@ def update_map(filter_value):
     color_map.add_to(m)
     return m
 
+
+# Création du graphique en aire 
+accidents_per_month = caracteristique.get_data(3)
+
+# Transformez ce dictionnaire en DataFrame pour Plotly
+df_area_chart = pd.DataFrame(list(accidents_per_month.items()), columns=['Mois', 'Nombre d\'accidents'])
+
+# Trier le DataFrame par mois si nécessaire (assurez-vous que les mois sont dans le bon ordre)
+df_area_chart['Mois'] = pd.Categorical(df_area_chart['Mois'], 
+                                        categories=['janvier', 'fevrier', 'mars', 'avril', 'mai', 'juin', 
+                                                    'juillet', 'aout', 'septembre', 'octobre', 'novembre', 'decembre'],
+                                        ordered=True)
+df_area_chart.sort_values('Mois', inplace=True)
+
+# Créer le graphique en aire avec Plotly Express
+fig_area = px.area(df_area_chart, x='Mois', y='Nombre d\'accidents', title='Nombre d\'accidents par mois')
+
+
 # Mise en page de l'app
 app.layout = html.Div([
-    html.H1("Nombre d'accidents par départements en France"),  # Titre de la page
-    dcc.Input(id='filter-input', type='number', value=0, debounce=True), # Ajoute un input pour filtrer la carte
-    html.Div(id='map-container'),  # Ajoute un conteneur pour la carte
-    dcc.Graph(id='map-histogram')  # Ajoute un composant pour l'histogramme
+    html.H1("Nombre d'accidents par départements en France"),
+    dcc.Input(id='filter-input', type='number', value=0, debounce=True, placeholder='Filtrer par le nombre d\'accidents ici..'),
+    html.Div(id='map-container'),
+    dcc.Graph(id='map-histogram'),  # L'histogramme déjà présent
+    dcc.Dropdown(  # Choix du mois pour le graphique en aire
+        id='month-dropdown',
+        options=[{'label': month, 'value': month} for month in accidents_per_month.keys()],
+        value='janvier',  # Mois par défaut
+        clearable=False
+    ),
+    dcc.Graph(id='accidents-area-chart')  # Nouveau composant pour le graphique en aire
 ])
 
-# Mise à jours de la carte et affichage de l'histogramme
+# Update map and histogram based on filter input
 @app.callback(
     [Output('map-container', 'children'), Output('map-histogram', 'figure')],
-    Input('filter-input', 'value')
+    [Input('filter-input', 'value')]
 )
-
 def update_map_output(filter_value):
+    if filter_value is None:
+        filter_value = 0
     updated_map = update_map(filter_value)
     
     df = pd.DataFrame({'Type d\'accidents': list(dict_obs.keys()), 'Nombre d\'accidents': list(dict_obs.values())})
-
-    # Créer un histogramme avec Plotly Express
     fig = px.bar(df, x='Type d\'accidents', y='Nombre d\'accidents', title='Nombre d\'accidents par type d\'accidents')
     
-    # Retourne la mise en page avec la carte mise à jour et l'histogramme
     return html.Iframe(srcDoc=updated_map.get_root().render(), width='100%', height='600px'), fig
+
+# Update area chart based on selected month
+@app.callback(
+    Output('accidents-area-chart', 'figure'),
+    [Input('month-dropdown', 'value')]
+)
+def update_area_chart(month):
+    accidents_data = accidents_per_month.get(month, {})
+    
+    df = pd.DataFrame({
+        'Jour du mois': list(accidents_data.keys()),
+        'Nombre d\'accidents': list(accidents_data.values())
+    })
+    
+    fig = px.area(df, x='Jour du mois', y='Nombre d\'accidents', title=f'Nombre d\'accidents en {month}')
+    
+    return fig
 
 # Exécute l'application
 if __name__ == '__main__':
