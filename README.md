@@ -31,7 +31,7 @@ Pour installer ce projet et le faire fonctionner sur votre système local, suive
   2. Installez les dépendances nécessaires en exécutant :   
         pip install -r requirements.txt
   3. Lancer l'application en exécutant :
-        python main.py
+        ```python main.py```
 ## Heading
 
 ### 1. User Guide
