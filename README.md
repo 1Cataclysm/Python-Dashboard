@@ -29,7 +29,7 @@ Pour installer ce projet et le faire fonctionner sur votre système local, suive
 
   1. Changez de répertoire pour accéder au projet cloné
   2. Installez les dépendances nécessaires en exécutant :   
-        pip install -r requirements.txt
+        ```pip install -r requirements.txt```
   3. Lancer l'application en exécutant :
         ```python main.py```
 ## Heading
