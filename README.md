@@ -13,7 +13,7 @@ Ce projet offre une carte interactive centrée sur l'Île-de-France qui illustre
 Pour installer ce projet et le faire fonctionner sur votre système local, suivez les étapes ci-dessous :
 
 - **Prérequis**
-  - [Python](https://www.python.org/downloads/) (version 3.8 ou ultérieure)
+  - [Python](https://www.python.org/downloads/) 
   - pip (généralement installé avec Python)
   - [Git](https://git-scm.com/downloads)
 
@@ -31,6 +31,7 @@ Pour installer ce projet et le faire fonctionner sur votre système local, suive
   2. Installez les dépendances nécessaires en exécutant :   
         ```pip install -r requirements.txt```
   3. Lancer l'application en exécutant :
+
         ```python main.py```
 ## Heading
 
