@@ -22,7 +22,7 @@ Pour installer ce projet et le faire fonctionner sur votre système local, suive
   1. Ouvrez votre terminal.
   2. Clonez le répertoire en utilisant la commande suivante :
 
-      git clone https://github.com/1Cataclysm/Python-Dashboard.git
+      ```git clone https://github.com/1Cataclysm/Python-Dashboard.git```
 
 
 - **Installation des Dépendances**
