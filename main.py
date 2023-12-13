@@ -79,7 +79,7 @@ df_area_chart.sort_values('Mois', inplace=True)
 fig_area = px.area(df_area_chart, x='Mois', y='Nombre d\'accidents', title='Nombre d\'accidents par mois')
 
 
-# Mise en page de l'appc
+# Mise en page de l'app
 app.layout = html.Div([
     html.H1("Nombre d'accidents par départements en France"),
     dcc.Input(id='filter-input', type='number', debounce=True, placeholder='Filtrer par le nombre d\'accidents ici..'),
@@ -114,7 +114,6 @@ def update_map_output(filter_value):
     fig = px.bar(df_accidents, x='Type d\'accidents', y='Nombre d\'accidents', title='Nombre d\'accidents par type d\'accidents')
 
     data = vehicule.get_data_vehicule_occupant()
-    df1 = pd.DataFrame(data)
     # Création de l'histogramme
     fig1 = px.histogram(data,range_x=[0.5,5.5])  
     fig1.update_xaxes(tickvals=[1, 2, 3, 4, 5])

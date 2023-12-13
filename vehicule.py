@@ -34,8 +34,13 @@ def get_data_vehicule():
 
 
 def get_data_vehicule_occupant():
-
-    dic_obs=get_data.get_OBS()
+    """
+    Retourne une liste contenant le nombre de personnes dans le véhicule lors de l'accident
+    Args:
+        aucun
+    Returns:
+        [1, 1, 1, 1, 7, . . . ]
+    """
     # Lien vers l'API
     url = "https://static.data.gouv.fr/resources/bases-de-donnees-annuelles-des-accidents-corporels-de-la-circulation-routiere-annees-de-2005-a-2021/20231005-094147/vehicules-2022.csv"
 
