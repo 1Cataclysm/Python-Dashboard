@@ -4,19 +4,19 @@ from dash import dcc, html
 import pandas as pd
 import folium, branca
 from folium import IFrame
-import plotly.express as px  # Importez Plotly Express
+import plotly.express as px
 import get_data
 import caracteristique
 import vehicule
 
 
-# Obtenir les données pour l'histogramme
+# variable contenant le nombre d'accident pour chaque type d'obstacle
 dict_obs = vehicule.get_data_vehicule()
 
-# Obtenir les données pour les départements
+# varaible contenant les coordonnées des départements
 coord_dict = get_data.get_dep()
 
-# Obtenir les données pour la carte
+# variable contenant le nombre d'accident par departement
 nb_accidents_par_departement = caracteristique.get_data(1)
 
 # Créer une application Dash
@@ -29,10 +29,18 @@ m = folium.Map(location=[46.603354, 1.888334], zoom_start=6)
 min_accidents = min(nb_accidents_par_departement.values())
 max_accidents = max(nb_accidents_par_departement.values())
 
+# créer la ligne de variation
 color_map = branca.colormap.LinearColormap(['green', 'gold', 'orange', 'red'], vmin=min_accidents, vmax=max_accidents)
 
 # Fonction pour mettre à jour la carte en fonction de la valeur du filtre
 def update_map(filter_value):
+    """
+    Retourne la carte folium avec le
+    Args:
+        filter_value : valeur entière
+    Returns:
+        folium.map
+    """
     m = folium.Map(location=[46.603354, 1.888334], zoom_start=6)
     for departement, nb_accidents in nb_accidents_par_departement.items():
         if departement in coord_dict and nb_accidents > filter_value:
@@ -54,8 +62,8 @@ def update_map(filter_value):
     return m
 
 
-# Création du graphique en aire 
-accidents_per_month = caracteristique.get_data(3)
+# variable contenant les accients de chaque mois 
+accidents_per_month = caracteristique.get_data(2)
 
 # Transforme le dictionnaire en DataFrame pour Plotly
 df_area_chart = pd.DataFrame(list(accidents_per_month.items()), columns=['Mois', 'Nombre d\'accidents'])
@@ -83,12 +91,19 @@ app.layout = html.Div([
     dcc.Graph(id='accidents-aire-graph')
 ])
 
-# Update map selon la valeur du filtre
+# Update la map selon la valeur du filtre
 @app.callback(
     [Output('map-container', 'children'), Output('map-histogram', 'figure')],
     [Input('filter-input', 'value')]
 )
 def update_map_output(filter_value):
+    """
+    Retourne la carte folium avec paramétrée selon le filtre reçu en paramètre
+    Args:
+        filter_value : valeur entière
+    Returns:
+        folium.map
+    """
     if filter_value is None:
         filter_value = 0
     updated_map = update_map(filter_value)
@@ -104,6 +119,13 @@ def update_map_output(filter_value):
     [Input('month-dropdown', 'value')]
 )
 def update_area_chart(month):
+    """
+    Retourne le graphique en aire paramétrée selon le filtre reçu en paramètre
+    Args:
+        month : chaine de caractères
+    Returns:
+        px.area
+    """
     accidents_data = accidents_per_month.get(month, {})
     
     df = pd.DataFrame({

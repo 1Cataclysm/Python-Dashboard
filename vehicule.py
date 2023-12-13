@@ -5,8 +5,15 @@ import get_data
 ssl._create_default_https_context = ssl._create_unverified_context
 
 def get_data_vehicule():
-
-    dic_obs=get_data.get_OBS()
+    """
+    Retourne le nombre d'accident pour chaque type d'obstacle (obs).
+    Args:
+        aucun
+    Returns:
+        {'Véhicule en stationnement ': 2247, 'Poteau': 1183,  . . .}
+    """
+    # variable contenant les différents type d'accident
+    dic_obs = get_data.get_OBS()
     # Lien vers l'API
     url = "https://static.data.gouv.fr/resources/bases-de-donnees-annuelles-des-accidents-corporels-de-la-circulation-routiere-annees-de-2005-a-2021/20231005-094147/vehicules-2022.csv"
 

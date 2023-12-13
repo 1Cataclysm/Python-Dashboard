@@ -2,6 +2,13 @@ import pandas as pd
 import csv
 
 def get_dep() : 
+    """
+    Retourne les coordonées de chaque département.
+    Args:
+        aucun
+    Returns:
+        {"01": (46.099, 5.349, "Ain"), "02": (49.559, 3.333, "Aisne"), . . .}
+    """
     return  {
         "01": (46.099, 5.349, "Ain"),
         "02": (49.559, 3.333, "Aisne"),
@@ -106,6 +113,13 @@ def get_dep() :
     }
 
 def get_OBS() : 
+    """
+    Retourne les différents type d'accident.
+    Args:
+        aucun
+    Returns:
+        { "-1": "Non renseigné", "1" : "Véhicule en stationnement ", "2" : "Arbre ", "3" : "Glissière métallique ", "4" : "Glissière béton" , "5" : "Autre glissière" , . . . }
+    """
     return {
         "-1": "Non renseigné",
         "1" : "Véhicule en stationnement ",
