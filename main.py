@@ -79,12 +79,13 @@ df_area_chart.sort_values('Mois', inplace=True)
 fig_area = px.area(df_area_chart, x='Mois', y='Nombre d\'accidents', title='Nombre d\'accidents par mois')
 
 
-# Mise en page de l'app
+# Mise en page de l'appc
 app.layout = html.Div([
     html.H1("Nombre d'accidents par départements en France"),
     dcc.Input(id='filter-input', type='number', debounce=True, placeholder='Filtrer par le nombre d\'accidents ici..'),
     html.Div(id='map-container'),
     html.H1("Histogramme représentant le nombre d'accidents selon le type d'accident"),
+    dcc.Graph(id='map-histogramun'),
     dcc.Graph(id='map-histogram'),
     html.H1("Graphique en Aire représentant le nombre d'accidents par jour pour chaque mois"),
     dcc.Dropdown(id='month-dropdown', options=[{'label': month, 'value': month} for month in accidents_per_month.keys()], value='janvier', clearable=False),
@@ -93,9 +94,10 @@ app.layout = html.Div([
 
 # Update la map selon la valeur du filtre
 @app.callback(
-    [Output('map-container', 'children'), Output('map-histogram', 'figure')],
+    [Output('map-container', 'children'), Output('map-histogramun', 'figure'), Output('map-histogram', 'figure')],
     [Input('filter-input', 'value')]
 )
+
 def update_map_output(filter_value):
     """
     Retourne la carte folium avec paramétrée selon le filtre reçu en paramètre
@@ -108,10 +110,18 @@ def update_map_output(filter_value):
         filter_value = 0
     updated_map = update_map(filter_value)
     
-    df = pd.DataFrame({'Type d\'accidents': list(dict_obs.keys()), 'Nombre d\'accidents': list(dict_obs.values())})
-    fig = px.bar(df, x='Type d\'accidents', y='Nombre d\'accidents', title='Nombre d\'accidents par type d\'accidents')
-    
-    return html.Iframe(srcDoc=updated_map.get_root().render(), width='100%', height='600px'), fig
+    df_accidents = pd.DataFrame({'Type d\'accidents': list(dict_obs.keys()), 'Nombre d\'accidents': list(dict_obs.values())})
+    fig = px.bar(df_accidents, x='Type d\'accidents', y='Nombre d\'accidents', title='Nombre d\'accidents par type d\'accidents')
+
+    data = vehicule.get_data_vehicule_occupant()
+    df1 = pd.DataFrame(data)
+    # Création de l'histogramme
+    fig1 = px.histogram(data,range_x=[0.5,5.5])  
+    fig1.update_xaxes(tickvals=[1, 2, 3, 4, 5])
+    fig1.update_yaxes(title='Somme')
+    fig1.update_xaxes(title='Nb de personne dans le vehicule')
+    return html.Iframe(srcDoc=updated_map.get_root().render(), width='100%', height='600px'), fig1, fig
+
 
 # Update le graphique aire selon le mois
 @app.callback(
