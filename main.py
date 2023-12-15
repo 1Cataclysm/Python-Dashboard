@@ -117,7 +117,7 @@ def update_map_output(filter_value):
     # Création de l'histogramme
     fig1 = px.histogram(data,range_x=[0.5,5.5])  
     fig1.update_xaxes(tickvals=[1, 2, 3, 4, 5])
-    fig1.update_yaxes(title='Somme')
+    fig1.update_yaxes(title='Nb d\'accidents')
     fig1.update_xaxes(title='Nb de personne dans le vehicule')
     return html.Iframe(srcDoc=updated_map.get_root().render(), width='100%', height='600px'), fig1, fig
 
