@@ -1,25 +1,55 @@
 body {
     padding: 30px;
     font-family: Arial, sans-serif;
+    background-color: lightslategrey;
 }
 
 h1 {
     text-align: center;
     margin-bottom: 20px;
+    color:white;
+}
+
+#app {
+    text-align: -webkit-center;
 }
 
 input {
-    width: 100%;
     padding: 10px;
     margin-bottom: 20px;
+    width: 50%;
 }
 
 #map-container {
-    width: 100%;
+    width: 80%;
     height: 600px;
 }
 
 #map-histogram {
-    width: 100%;
+    width: 80%;
     height: 400px;
+}
+.Select-control {
+    border-radius: 10px;
+}
+.Select-multi-value-wrapper {
+    border-radius: 10px;
+}
+.shadow {
+    background-color: #f0f0f0;
+    box-shadow: 5px 10px 20px rgba(0, 0, 0, 0.25);
+    margin: 20px;
+}
+
+#map-histogramun {
+    width: 80%;
+}
+
+#month-dropdown {
+    width: 50%;
+    text-align: center;
+}
+
+#accidents-aire-graph {
+    width: 80%;
 }

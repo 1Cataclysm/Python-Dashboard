@@ -82,15 +82,15 @@ fig_area = px.area(df_area_chart, x='Mois', y='Nombre d\'accidents', title='Nomb
 # Mise en page de l'app
 app.layout = html.Div([
     html.H1("Nombre d'accidents par départements en France"),
-    dcc.Input(id='filter-input', type='number', debounce=True, placeholder='Filtrer par le nombre d\'accidents ici..'),
-    html.Div(id='map-container'),
+    dcc.Input(id='filter-input', className="shadow", type='number', debounce=True, placeholder='Filtrer par le nombre d\'accidents ici..'),
+    html.Div(id='map-container', className="shadow"),
     html.H1("Histogramme représentant le nombre d'accidents selon le type d'accident"),
-    dcc.Graph(id='map-histogramun'),
-    dcc.Graph(id='map-histogram'),
+    dcc.Graph(id='map-histogramun', className="shadow"),
+    dcc.Graph(id='map-histogram', className="shadow"),
     html.H1("Graphique en Aire représentant le nombre d'accidents par jour pour chaque mois"),
-    dcc.Dropdown(id='month-dropdown', options=[{'label': month, 'value': month} for month in accidents_per_month.keys()], value='janvier', clearable=False),
-    dcc.Graph(id='accidents-aire-graph')
-])
+    dcc.Dropdown(id='month-dropdown', className="shadow", options=[{'label': month, 'value': month} for month in accidents_per_month.keys()], value='janvier', clearable=False),
+    dcc.Graph(id='accidents-aire-graph', className="shadow")
+], id="app")
 
 # Update la map selon la valeur du filtre
 @app.callback(
