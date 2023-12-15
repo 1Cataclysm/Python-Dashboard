@@ -30,7 +30,10 @@ input {
     height: 640px;
 }
 .Select-control {
-    border-radius: 10px;
+    border-radius: 20px;
+}
+.Select div {
+    border-radius: 20px;
 }
 .Select-multi-value-wrapper {
     border-radius: 10px;
@@ -39,6 +42,7 @@ input {
     background-color: #f0f0f0;
     box-shadow: 5px 10px 20px rgba(0, 0, 0, 0.25);
     margin: 20px;
+    border-radius: 20px;
 }
 
 #map-histogramun {
@@ -52,4 +56,8 @@ input {
 
 #accidents-aire-graph {
     width: 80%;
+}
+
+.is-searchable.is-open>.Select-control {
+    border-radius: 20px;
 }
