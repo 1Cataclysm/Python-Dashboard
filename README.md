@@ -74,12 +74,17 @@ Le projet est structuré en plusieurs fichiers clés qui s'occupent de différen
 
 - **vehicule.py**: Similaire à `caracteristique.py`, ce fichier gère la récupération et le traitement des données des véhicules impliqués dans les accidents.
 
+- **vehicule.py**: Similaire à `lieux.py`, ce fichier gère la récupération et le traitement des données des lieux impliqués dans les accidents.
+
 #### Description Détaillée
 
 **main.py**
 - Initialise et configure l'application Dash.
-- Crée une carte interactive avec Folium basée sur les données des accidents par département.
+- Créer une carte interactive avec Folium basée sur les données des accidents par département.
 - Définit les rappels pour la mise à jour de la carte et la génération de l'histogramme des types d'accidents.
+- Créer le diagramme en barre
+- Créer l'histogramme
+- Créer le graphique en aire avec son filtre
 
 **get_data.py**
 - Fournit des données statiques pour l'application, y compris les codes des départements.
@@ -96,7 +101,7 @@ Le projet est structuré en plusieurs fichiers clés qui s'occupent de différen
 - Ce traitement permet de préparer les données pour une visualisation géographique des accidents sur la carte et pour des analyses statistiques complémentaires.
 
 **vehicule.py**
-- Ce script sert à récupérer des données concernant les véhicules impliqués dans les accidents corporels de la circulation, à partir d'un fichier CSV mis à disposition sur la plateforme data.gouv.fr.
+- Ce script sert à récupérer des données concernant les véhicules impliqués dans les accidents corporels de la circulation, à partir de l'api mis à disposition sur la plateforme data.gouv.fr.
 - Les données sont chargées et traitées à l'aide de la bibliothèque `pandas`.
 - Avant d'accéder aux données, le script fait appel à une fonction `get_OBS` du module `get_data` pour obtenir un dictionnaire qui sert à décoder les codes d'observation (`OBS`) liés aux véhicules.
 - Pour chaque enregistrement dans le CSV, le script vérifie la colonne `obs` (observation) et ne traite que les cas où cette valeur est différente de "0" (qui signifierait aucun observateur).
@@ -105,9 +110,18 @@ Le projet est structuré en plusieurs fichiers clés qui s'occupent de différen
 
 Ce fichier joue un rôle crucial dans l'analyse des types d'incidents véhiculaires, permettant aux utilisateurs de comprendre les tendances et les motifs communs dans les accidents de la route.
 
+**lieux.py**
+- Ce script sert à récupérer des données concernant les lieux impliqués dans les accidents corporels de la circulation, à partir de l'api mis à disposition sur la plateforme data.gouv.fr.
+- Les données sont chargées et traitées à l'aide de la bibliothèque `pandas`.
+- Le script convertit les "vma" récupérées en int
+- Retourne la liste des datas avec les vma en int 
+
+**style.css**
+- Contient le style de tous les éléments de la page
 
 ### Utilisation des Données
-- Les données récupérées par `caracteristique.py` et `vehicule.py` sont utilisées pour afficher les accidents sur la carte et pour fournir une analyse statistique dans l'histogramme.
+- Les données récupérées par `caracteristique.py` et `vehicule.py` sont utilisées pour afficher les accidents sur la carte et pour fournir une analyse statistique dans le diagramme en barre.
+- Les données récupérées par `lieux.py` sont utilisées pour afficher l'histogramme.
 - `get_data.py` est utilisé pour préparer les données statiques, qui aident à interpréter et à afficher les données dynamiques correctement.
 
 

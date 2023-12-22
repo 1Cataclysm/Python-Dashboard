@@ -61,3 +61,7 @@ input {
 .is-searchable.is-open>.Select-control {
     border-radius: 20px;
 }
+
+#histogram-vma {
+    width: 80%;
+}

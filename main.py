@@ -8,6 +8,7 @@ import plotly.express as px
 import get_data
 import caracteristique
 import vehicule
+import lieux
 
 
 # variable contenant le nombre d'accident pour chaque type d'obstacle
@@ -84,23 +85,21 @@ app.layout = html.Div([
     html.H1("Nombre d'accidents par départements en France"),
     dcc.Input(id='filter-input', className="shadow", type='number', debounce=True, placeholder='Filtrer par le nombre d\'accidents ici..'),
     html.Div(id='map-container', className="shadow"),
-    html.H1("Histogramme représentant le nombre d'accidents selon le type d'accident"),
-    dcc.Graph(id='map-histogramun', className="shadow"),
     dcc.Graph(id='map-histogram', className="shadow"),
-    html.H1("Graphique en Aire représentant le nombre d'accidents par jour pour chaque mois"),
+    dcc.Graph(id='histogram-vma', className="shadow"),
     dcc.Dropdown(id='month-dropdown', className="shadow", options=[{'label': month, 'value': month} for month in accidents_per_month.keys()], value='janvier', clearable=False),
     dcc.Graph(id='accidents-aire-graph', className="shadow")
 ], id="app")
 
-# Update la map selon la valeur du filtre
+# Update la map selon la valeur du filtre, dessine le graphique en barre et l'histogramme
 @app.callback(
-    [Output('map-container', 'children'), Output('map-histogramun', 'figure'), Output('map-histogram', 'figure')],
+    [Output('map-container', 'children'), Output('map-histogram', 'figure'), Output('histogram-vma','figure')],
     [Input('filter-input', 'value')]
 )
 
 def update_map_output(filter_value):
     """
-    Retourne la carte folium avec paramétrée selon le filtre reçu en paramètre
+    Retourne la carte folium selon le filtre reçu en paramètre, le graphique en barre, l'histogramme
     Args:
         filter_value : valeur entière
     Returns:
@@ -111,15 +110,16 @@ def update_map_output(filter_value):
     updated_map = update_map(filter_value)
     
     df_accidents = pd.DataFrame({'Type d\'accidents': list(dict_obs.keys()), 'Nombre d\'accidents': list(dict_obs.values())})
-    fig = px.bar(df_accidents, x='Type d\'accidents', y='Nombre d\'accidents', title='Nombre d\'accidents par type d\'accidents')
+    fig = px.bar(df_accidents, x='Type d\'accidents', y='Nombre d\'accidents', title='Diagramme en barre : Nombre d\'accidents par type d\'accidents')
 
-    data = vehicule.get_data_vehicule_occupant()
-    # Création de l'histogramme
-    fig1 = px.histogram(data,range_x=[0.5,5.5])  
-    fig1.update_xaxes(tickvals=[1, 2, 3, 4, 5])
-    fig1.update_yaxes(title='Nb d\'accidents')
-    fig1.update_xaxes(title='Nb de personne dans le vehicule')
-    return html.Iframe(srcDoc=updated_map.get_root().render(), width='100%', height='600px'), fig1, fig
+    data_lieux = lieux.get_lieux_data()
+    fig3 = px.histogram(data_lieux, 
+                    x="vma",
+                    title="Histogramme : Nombre d'accidents par intervalle de VMA (30 km/h par intervalle)"
+                    )
+    fig3.update_traces(xbins=dict(start=0.0, end=140, size=20))
+    fig3.update_layout(yaxis_title="Nb d\'accidents")
+    return html.Iframe(srcDoc=updated_map.get_root().render(), width='100%', height='600px'), fig, fig3
 
 
 # Update le graphique aire selon le mois
@@ -142,7 +142,7 @@ def update_area_chart(month):
         'Nombre d\'accidents': list(accidents_data.values())
     })
     
-    fig = px.area(df, x='Jour du mois', y='Nombre d\'accidents', title=f'Nombre d\'accidents en {month}')
+    fig = px.area(df, x='Jour du mois', y='Nombre d\'accidents', title=f'Graphique en Aire : Nombre d\'accidents en {month}')
     
     return fig
 
